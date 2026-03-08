@@ -9,7 +9,7 @@ import com.service.SearchService;
  * Acts as the controller for guest search operations.
  * Interacts with SearchService and displays results.
  *
- * @author Preetham	
+ * @author Preetham
  * @version 1.0
  */
 public class SearchManager {

@@ -4,21 +4,26 @@ import java.util.Scanner;
 
 import com.model.Reservation;
 import com.service.BookingQueueService;
+import com.service.BookingService;
 
 /**
  * Handles user interaction for booking requests.
  * Acts as a controller between the UI
- * and the booking queue service.
+ * and the booking services.
  *
  * @author Preetham
- * @version 1.0
+ * @version 2.0
  */
 public class BookingManager {
 
     private BookingQueueService bookingQueueService;
+    private BookingService bookingService;
 
-    public BookingManager(BookingQueueService bookingQueueService) {
+    public BookingManager(BookingQueueService bookingQueueService,
+                          BookingService bookingService) {
+
         this.bookingQueueService = bookingQueueService;
+        this.bookingService = bookingService;
     }
 
     public void createBookingRequest(Scanner scanner) {
@@ -33,17 +38,19 @@ public class BookingManager {
         int nights = scanner.nextInt();
         scanner.nextLine();
 
-        Reservation reservation =
-                new Reservation(guestName, roomType, nights);
-
+        Reservation reservation = new Reservation(guestName, roomType, nights);
         bookingQueueService.addBookingRequest(reservation);
     }
 
     public void processNextRequest() {
-        bookingQueueService.processNextBooking();
+        bookingService.processBooking();
     }
 
     public void showQueue() {
         bookingQueueService.viewQueue();
+    }
+    
+    public void showConfirmedReservations() {
+        bookingService.viewConfirmedReservations();
     }
 }
