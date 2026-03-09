@@ -4,9 +4,11 @@ import java.util.Scanner;
 
 import com.manager.BookingManager;
 import com.manager.InventoryManager;
+import com.manager.ReportManager;
 import com.manager.SearchManager;
 import com.manager.ServiceManager;
 import com.service.AddOnServiceService;
+import com.service.BookingHistoryService;
 import com.service.BookingQueueService;
 import com.service.BookingService;
 import com.service.SearchService;
@@ -17,7 +19,7 @@ import com.service.SearchService;
  * room search, and booking queue operations.
  *
  * @author Preetham
- * @version 5.0
+ * @version 6.0
  */
 public class BookMyStayApp {
 
@@ -30,13 +32,21 @@ public class BookMyStayApp {
         SearchManager searchManager = new SearchManager(searchService);
 
         BookingQueueService bookingQueueService = new BookingQueueService();
-        BookingService bookingService = new BookingService(bookingQueueService,inventoryManager.getInventoryService());
-
+        
+        BookingHistoryService bookingHistoryService = new BookingHistoryService();
+        
+        BookingService bookingService =
+                new BookingService(
+                        bookingQueueService,
+                        inventoryManager.getInventoryService());
+        
         BookingManager bookingManager = new BookingManager(bookingQueueService, bookingService);
         
         AddOnServiceService addOnServiceService = new AddOnServiceService();
 
         ServiceManager serviceManager = new ServiceManager(addOnServiceService);
+        
+        ReportManager reportManager = new ReportManager(bookingHistoryService);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -59,7 +69,8 @@ public class BookMyStayApp {
             System.out.println("8 View Confirmed Reservations");
             System.out.println("9 Add Service to Reservation");
             System.out.println("10 View Reservation Services");
-            System.out.println("11 Exit");
+            System.out.println("11 View Booking History Report");
+            System.out.println("12 Exit");
 
             System.out.print("Enter choice: ");
             choice = scanner.nextInt();
@@ -112,8 +123,20 @@ public class BookMyStayApp {
                 case 8:
                     bookingManager.showConfirmedReservations();
                     break;
+                    
+                case 9:
+                    serviceManager.addServiceToReservation(scanner);
+                    break;
 
-                case 11:
+                case 10:
+                    serviceManager.viewReservationServices(scanner);
+                    break;
+                
+                case 11: 
+                    reportManager.generateBookingReport();
+                    break;
+
+                case 12:
                     System.out.println("Exiting BookMyStay...");
                     break;
 
@@ -121,7 +144,7 @@ public class BookMyStayApp {
                     System.out.println("Invalid choice.");
             }
 
-        } while (choice != 11);
+        } while (choice != 12);
 
         scanner.close();
     }
